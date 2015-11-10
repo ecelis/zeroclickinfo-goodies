@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 use DDG::Test::Goodie;
+use Test::MockTime qw( :all );
 
 zci answer_type => 'days_between';
 zci is_cached   => 1;
@@ -14,7 +15,7 @@ ddg_goodie_test(
         'There are 366 days between 01 Jan 2000 and 01 Jan 2001.',
         structured_answer => {
             input     => ['01 Jan 2000', '01 Jan 2001'],
-            operation => 'days between',
+            operation => 'Days between',
             result    => 366
         },
     ),
@@ -22,7 +23,7 @@ ddg_goodie_test(
         'There are 367 days between 01 Jan 2000 and 01 Jan 2001, inclusive.',
         structured_answer => {
             input     => ['01 Jan 2000', '01 Jan 2001'],
-            operation => 'days between, inclusive',
+            operation => 'Days between, inclusive',
             result    => 367
         },
     ),
@@ -30,7 +31,7 @@ ddg_goodie_test(
         'There are 5728 days between 04 Mar 2005 and 08 Nov 2020.',
         structured_answer => {
             input     => ['04 Mar 2005', '08 Nov 2020'],
-            operation => 'days between',
+            operation => 'Days between',
             result    => 5728
         },
     ),
@@ -38,7 +39,7 @@ ddg_goodie_test(
         'There are 802 days between 02 Jan 2003 and 14 Mar 2005.',
         structured_answer => {
             input     => ['02 Jan 2003', '14 Mar 2005'],
-            operation => 'days between',
+            operation => 'Days between',
             result    => 802
         },
     ),
@@ -46,7 +47,7 @@ ddg_goodie_test(
         'There are 366 days between 31 Jan 2000 and 31 Jan 2001.',
         structured_answer => {
             input     => ['31 Jan 2000', '31 Jan 2001'],
-            operation => 'days between',
+            operation => 'Days between',
             result    => 366
         },
     ),
@@ -54,7 +55,7 @@ ddg_goodie_test(
         'There are 367 days between 31 Jan 2000 and 31 Jan 2001, inclusive.',
         structured_answer => {
             input     => ['31 Jan 2000', '31 Jan 2001'],
-            operation => 'days between, inclusive',
+            operation => 'Days between, inclusive',
             result    => 367
         },
     ),
@@ -62,7 +63,7 @@ ddg_goodie_test(
         'There are 367 days between 31 Jan 2000 and 31 Jan 2001, inclusive.',
         structured_answer => {
             input     => ['31 Jan 2000', '31 Jan 2001'],
-            operation => 'days between, inclusive',
+            operation => 'Days between, inclusive',
             result    => 367
         },
     ),
@@ -70,7 +71,7 @@ ddg_goodie_test(
         "There are 284158 days between 01 Jan 1234 and 01 Jan 2012.",
         structured_answer => {
             input     => ['01 Jan 1234', '01 Jan 2012'],
-            operation => 'days between',
+            operation => 'Days between',
             result    => 284158
         },
     ),
@@ -78,7 +79,7 @@ ddg_goodie_test(
         qr/^There are 15 days between.+inclusive\.$/,
         structured_answer => {
             input     => '-ANY-',
-            operation => 'days between, inclusive',
+            operation => 'Days between, inclusive',
             result    => 15
         },
     ),
@@ -86,11 +87,66 @@ ddg_goodie_test(
         qr/^There are 45 days between.+and 15 Feb [0-9]{4}\.$/,
         structured_answer => {
             input     => '-ANY-',
-            operation => 'days between',
+            operation => 'Days between',
             result    => 45
+        },
+    ),
+       'number of days between jan 1 and 15th feb' => test_zci(
+        qr/^There are 45 days between.+and 15 Feb [0-9]{4}\.$/,
+        structured_answer => {
+            input     => '-ANY-',
+            operation => 'Days between',
+            result    => 45
+        },
+    ),
+    'number of days from jan 1 and 15th feb' => test_zci(
+        qr/^There are 45 days between.+and 15 Feb [0-9]{4}\.$/,
+        structured_answer => {
+            input     => '-ANY-',
+            operation => 'Days between',
+            result    => 45
+        },
+    ),
+    'days from jan 1 and 15th feb' => test_zci(
+        qr/^There are 45 days between.+and 15 Feb [0-9]{4}\.$/,
+        structured_answer => {
+            input     => '-ANY-',
+            operation => 'Days between',
+            result    => 45
+        },
+    ),
+    'days between today and tomorrow' => test_zci(
+        qr/^There are 1 days between.+ and.+\.$/,
+        structured_answer => {
+            input     => '-ANY-',
+            operation => 'Days between',
+            result    => 1
+        },
+    ),
+    'how many days between feb 2 and feb 17' => test_zci(
+        qr/^There are 15 days between.+ and.+\.$/,
+        structured_answer => {
+            input     => '-ANY-',
+            operation => 'Days between',
+            result    => 15
         },
     ),
     'days between jan 1 2012 and jan 1 123456' => undef,
 );
 
+set_fixed_time('2015-07-14T22:36:00');
+
+ddg_goodie_test(
+    [qw( DDG::Goodie::DaysBetween)],
+    'days between 22nd may and today' => test_zci(
+        'There are 53 days between 22 May 2015 and 14 Jul 2015.',
+        structured_answer => {
+            input     => ['22 May 2015', '14 Jul 2015'],
+            operation => 'Days between',
+            result    => 53
+        },
+    ),
+);
+
+restore_time();
 done_testing;

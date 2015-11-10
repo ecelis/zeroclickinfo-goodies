@@ -1,6 +1,7 @@
 package DDG::Goodie::RandomNumber;
 # ABSTRACT: generate a random number in the requested range.
 
+use strict;
 use DDG::Goodie;
 
 primary_example_queries 'random number between 1 and 12', 'random number';
@@ -9,7 +10,9 @@ name 'RandomNumber';
 code_url 'https://github.com/duckduckgo/zeroclickinfo-goodies/blob/master/lib/DDG/Goodies/RandomNumber.pm';
 category 'computing_tools';
 topics 'cryptography';
-attribution github => ['https://github.com/duckduckgo', 'duckduckgo'];
+attribution github => ['duckduckgo', 'DuckDuckGo'],
+            github => ['https://github.com/loganom', 'loganom'],
+            twitter => ['https://twitter.com/loganmccamon', 'loganom'];
 
 zci answer_type => 'rand';
 zci is_cached   => 0;
@@ -36,17 +39,19 @@ handle query_lc => sub {
 
     ($end, $start) = ($start, $end) if ($start > $end);
 
+    my $valDiff = $end - $start;
+
     my $rand = rand;
 
-    if ($start && $end) {
-        $rand *= ($end - $start + 1);
+    if ($start && $end || $valDiff > 1) {
+        $rand *= ($valDiff + 1);
         $rand = int($rand) + $start;
     }
 
     return $rand . " (random number)",
       structured_answer => {
         input     => [$start, $end],
-        operation => 'random number between',
+        operation => 'Random number between',
         result    => $rand
       };
 };

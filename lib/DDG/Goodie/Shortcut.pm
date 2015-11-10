@@ -1,7 +1,10 @@
 package DDG::Goodie::Shortcut;
 # ABSTRACT: Display keyboard shortcut for an action.
 
+use strict;
 use DDG::Goodie;
+use utf8;
+use Text::Trim;
 
 triggers any => 'shortcut','keyboard shortcut', 'key combination';
 
@@ -14,9 +17,9 @@ description 'Keyboard shortcuts';
 name 'Shortcut';
 topics 'computing';
 category 'computing_info';
-attribution github => ['https://github.com/dariog88a','dariog88a'],
-            email => [ 'mailto:dariog88@gmail.com', 'dariog88' ],
-            twitter => ['http://twitter.com/dariog88','dariog88'];
+attribution github => ['dariog88a','Darío'],
+            email => [ 'dariog88@gmail.com', 'Darío' ],
+            twitter => ['dariog88', 'Darío'];
 
 my @shortcuts = share('shortcuts.csv')->slurp(iomode => '<:encoding(UTF-8)');
 
@@ -34,7 +37,7 @@ handle remainder_lc => sub {
     my $os = $1; #save OS char
     $search =~ tr/[WML]//d; #remove all OS chars from search
     $search =~ tr/ / /s; #leave just one blank between words
-    $search =~ s/^\s+|\s+$//g; #trim
+    $search = trim $search; #trim
 
 if(!$os) {$os='';} #line added to avoid error, remove when UA detection added.
 

@@ -1,6 +1,7 @@
 package DDG::Goodie::Coin;
 # ABSTRACT: flip a (fair) coin.
 
+use strict;
 use DDG::Goodie;
 
 zci is_cached => 0;
@@ -19,7 +20,7 @@ attribution github => [ 'http://github.com/mattlehning', 'mattlehning' ];
 
 handle query_lc => sub {
     my $flips;
-    if ($_ =~ /^(heads or tails[ ]?[\?]?)|((flip|toss) a coin)$/) {
+    if ($_ =~ /^(heads or tails[ ]?[\?]?)|((flip|toss) (a )?coin)$/) {
         $flips = 1;
     } elsif ($_ =~ /^(?:flip|toss) (\d{0,2}) coins?$/) {
         $flips = $1;
@@ -45,7 +46,7 @@ handle query_lc => sub {
         $result . ' (random)',
         structured_answer => {
             input     => [$flips],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => $result
         });
 };

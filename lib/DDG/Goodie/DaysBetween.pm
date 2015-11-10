@@ -1,10 +1,11 @@
 package DDG::Goodie::DaysBetween;
 # ABSTRACT: Give the number of days between two given dates.
 
+use strict;
 use DDG::Goodie;
 with 'DDG::GoodieRole::Dates';
 
-triggers start => "days between", "days", "daysbetween", "days_between";
+triggers start => "days between", "days", "daysbetween", "days_between", "number of days between", "how many days between", "number of days from", "days from";
 
 zci is_cached => 1;
 zci answer_type => "days_between";
@@ -41,7 +42,7 @@ handle remainder => sub {
     return "There are $daysBetween days between $startDate and $endDate$inclusive.",
       structured_answer => {
         input     => [$startDate, $endDate,],
-        operation => 'days between' . $inclusive,
+        operation => 'Days between' . $inclusive,
         result    => $daysBetween
       };
 };

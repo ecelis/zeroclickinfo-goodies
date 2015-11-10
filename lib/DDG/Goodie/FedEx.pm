@@ -1,6 +1,7 @@
 package DDG::Goodie::FedEx;
 # ABSTRACT: Track a package through FedEx
 
+use strict;
 use DDG::Goodie;
 
 zci is_cached => 1;
@@ -16,9 +17,7 @@ source "FedEx";
 code_url "https://github.com/duckduckgo/zeroclickinfo-goodies/blob/master/lib/DDG/Goodie/FedEx.pm";
 category 'ids';
 topics 'special_interest';
-attribution web => [ 'https://www.duckduckgo.com', 'DuckDuckGo' ],
-            github => [ 'https://github.com/duckduckgo', 'duckduckgo'],
-            twitter => ['http://twitter.com/duckduckgo', 'duckduckgo'];
+attribution github => [ 'https://github.com/duckduckgo', 'duckduckgo'];
 
 # Regex for fedex.
 my $fedex_qr = qr/fed(?:eral|)ex(?:press|)/io;
@@ -116,7 +115,7 @@ handle query_nowhitespace_nodash => sub {
     }
 
     if ($is_fedex) {
-        return $package_number, heading => 'FedEx Shipment Tracking', html => qq(Track this shipment at <a href="http://fedex.com/Tracking?tracknumbers=$package_number&action=track">FedEx</a>.);
+        return $package_number, heading => 'FedEx Shipment Tracking', html => qq(Track this shipment at <a href="https://www.fedex.com/apps/fedextrack/?tracknumbers=$package_number&action=track">FedEx</a>.);
     }
 
     return;

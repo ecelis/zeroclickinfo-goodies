@@ -183,12 +183,88 @@ subtest 'Dates' => sub {
                 src    => ['5-06-2014', '4th January 2013', '20-06-2014'],
                 output => [1401926400,  1357257600,         1403222400],     # 5 jun; 4 jan, 20 jun
             },
+            {
+                src    => ['7-11-2015', 'august'],
+                output => [1436572800,  1438387200],     # 11 jul; aug 1
+            },
         );
 
         foreach my $set (@date_sets) {
             my @source = @{$set->{src}};
             eq_or_diff([map { $_->epoch } (DatesRoleTester::parse_all_datestrings_to_date(@source))],
                 $set->{output}, '"' . join(', ', @source) . '": dates parsed correctly');
+        }
+    };
+
+    subtest 'Strong dates and vague or relative dates mixed' => sub {
+        set_fixed_time('2001-02-05T00:00:00Z');
+        my @date_sets = (
+            {
+                src => ["1990-06-13", "december"],
+                out => ['1990-06-13T00:00:00', '1990-12-01T00:00:00']
+            },
+#            {
+#                src => ["1990-06-13", "last december"],
+#                out => ['1990-06-13T00:00:00', '2000-12-01T00:00:00']
+#            },
+#            {
+#                src => ["1990-06-13", "next december"],
+#                out => ['1990-06-13T00:00:00', '2001-12-01T00:00:00']
+#            },
+            {
+                src => ["1990-06-13", "today"],
+                out => ['1990-06-13T00:00:00', '2001-02-05T00:00:00']
+            },
+            {
+                src => ["1990-06-13", "tomorrow"],
+                out => ['1990-06-13T00:00:00', '2001-02-06T00:00:00']
+            },
+            {
+                src => ["1990-06-13", "yesterday"],
+                out => ['1990-06-13T00:00:00', '2001-02-04T00:00:00']
+            }
+        );
+
+        foreach my $set (@date_sets) {
+            my @source = @{$set->{src}};
+            my @expectation = @{$set->{out}};
+            my @result = DatesRoleTester::parse_all_datestrings_to_date(@source);
+            is_deeply(\@result, \@expectation, join(", ", @source));
+        }
+
+        restore_time();
+    };
+    
+    subtest 'Relative naked months' => sub {
+        
+        my %time_strings = (
+            "2015-01-13T00:00:00Z" => {
+                src    => ['january', 'february'],
+                output => ['2015-01-01T00:00:00', '2015-02-01T00:00:00'],
+            },
+            "2015-02-01T00:00:00Z" => {
+                src    => ['january', 'february'],
+                output => ['2016-01-01T00:00:00',  '2016-02-01T00:00:00'],
+            },
+            "2015-03-01T00:00:00Z" => {
+                src    => ['january', 'february'],
+                output => ['2016-01-01T00:00:00',  '2016-02-01T00:00:00'],
+            },
+            "2014-12-01T00:00:00Z" => {
+                src    => ['january', 'february'],
+                output => ['2015-01-01T00:00:00',  '2015-02-01T00:00:00'],
+            },
+            
+        );
+        
+        foreach my $query_time (sort keys %time_strings) {
+            set_fixed_time($query_time);
+            
+            my @source = @{$time_strings{$query_time}{src}};
+            my @expectation = @{$time_strings{$query_time}{output}};
+            my @result = DatesRoleTester::parse_all_datestrings_to_date(@source);
+            
+            is_deeply(\@result, \@expectation);
         }
     };
 
@@ -268,6 +344,8 @@ subtest 'Dates' => sub {
                 'december 2015' => '01 Dec 2015',
                 'june 2000'     => '01 Jun 2000',
                 'jan'           => '01 Jan 2001',
+                'august'        => '01 Aug 2000',
+                'aug'           => '01 Aug 2000',
                 'next jan'      => '01 Jan 2001',
                 'last jan'      => '01 Jan 2000',
                 'feb 2038'      => '01 Feb 2038',
@@ -277,6 +355,7 @@ subtest 'Dates' => sub {
                 'next december' => '01 Dec 2016',
                 'last january'  => '01 Jan 2015',
                 'june'          => '01 Jun 2016',
+                'december'      => '01 Dec 2015',
                 'december 2015' => '01 Dec 2015',
                 'june 2000'     => '01 Jun 2000',
                 'jan'           => '01 Jan 2016',
@@ -293,6 +372,7 @@ subtest 'Dates' => sub {
             },
             '2000-01-01T00:00:00Z' => {
                 'feb 21st'          => '21 Feb 2000',
+                'january'           => '01 Jan 2000',
                 '11th feb'          => '11 Feb 2000',
                 'march 13'          => '13 Mar 2000',
                 '12 march'          => '12 Mar 2000',
@@ -323,11 +403,11 @@ subtest 'Dates' => sub {
                 'december 2015'     => '01 Dec 2015',
                 'march 13'          => '13 Mar 2014',
                 'in a weeks time'   => '15 Oct 2014',
-                'a month ago'       => '01 Dec 1999',
                 '2 months ago'      => '08 Aug 2014',
                 'in 2 years'        => '08 Oct 2016',
                 'a week ago'        => '01 Oct 2014',
                 'a month ago'       => '08 Sep 2014',
+                'in 2 days'         => '10 Oct 2014'
             },
         );
         foreach my $query_time (sort keys %time_strings) {
@@ -396,7 +476,27 @@ subtest 'Dates' => sub {
 
         restore_time();
     };
+    subtest 'Valid Years' => sub {
+        #my @valids = ('1', '0001', '9999', 2015, 1997);
+        my @valids = ('1');
+        my @invalids = (-1, 0, 10000);
 
+        foreach my $case (@valids) {
+            my $result;
+            lives_ok {
+                $result = DatesRoleTester::is_valid_year($case)
+            };
+            is($result, "1", "$case is a valid year");
+        }
+
+        foreach my $case (@invalids) {
+            my $result;
+            lives_ok {
+                $result = DatesRoleTester::is_valid_year($case)
+            };
+            is($result, '', "$case is an invalid year");
+        }
+    }
 };
 
 subtest 'ImageLoader' => sub {
@@ -438,7 +538,7 @@ subtest 'ImageLoader' => sub {
             use MIME::Base64;
             with 'DDG::GoodieRole::ImageLoader';
             our $tmp_dir = Path::Class::tempdir(CLEANUP => 1);
-            our $tmp_file = file(($tmp_dir->tempfile(TEMPLATE => 'img_XXXXXX', suffix   => '.gif'))[1]);
+            our $tmp_file = file(($tmp_dir->tempfile(TEMPLATE => 'img_XXXXXX', SUFFIX => '.gif'))[1]);
             # Always return the same file for our purposes here.
             sub share     { $tmp_file }
             sub html_enc  { encode_entities(@_) }                                             # Deal with silly symbol table twiddling.

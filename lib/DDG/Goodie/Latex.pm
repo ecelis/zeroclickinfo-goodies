@@ -1,6 +1,7 @@
 package DDG::Goodie::Latex;
 # ABSTRACT: Show the Latex command for a keyword
 
+use strict;
 use DDG::Goodie;
 
 triggers startend => 'latex', 'tex';
@@ -12,7 +13,7 @@ name 'Latex';
 code_url 'https://github.com/duckduckgo/zeroclickinfo-goodies/blob/master/lib/DDG/Goodie/Latex.pm';
 attribution
     web => ['www.transistor.io', 'Jason Dorweiler'],
-    github => [ 'jdorweiler', 'Jason_Dorweiler'];
+    github => [ 'jdorweiler', 'Jason Dorweiler'];
 
 zci answer_type => 'Latex';
 zci is_cached   => 1;
@@ -23,8 +24,8 @@ my %texCommands = (
 	"and" => ['Logical AND', '\land', '$A \land B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
 	"or" =>  ['Logical OR', '\lor', '$A \lor B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
 	"not" => ['Logical NOT', '\neg', '$\neg B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
-	"union" => ['Union', '\cap', '$A \cap B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
-	"intersection" => ['Intersection', '\cup', '$A \cup B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
+	"union" => ['Union', '\cup', '$A \cup B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
+	"intersection" => ['Intersection', '\cap', '$A \cap B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
 	"implication" => ['Implication', '\rightarrow', '$A \rightarrow B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
 	"iff" => ['If and Only If', '\leftrightarrow', '$A \leftrightarrow B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],
 	"if and only if" => ['If and Only If', '\leftrightarrow', '$A \leftrightarrow B$', 'https://en.wikibooks.org/wiki/LaTeX/Mathematics#List_of_Mathematical_Symbols'],

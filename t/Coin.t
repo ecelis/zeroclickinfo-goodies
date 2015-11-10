@@ -14,7 +14,15 @@ ddg_goodie_test(
         qr/(heads|tails) \(random\)/,
         structured_answer => {
             input     => [1],
-            operation => 'flip coin',
+            operation => 'Flip coin',
+            result    => qr/^(heads|tails)$/
+        }
+    ),
+    'flip coin' => test_zci(
+        qr/(heads|tails) \(random\)/,
+        structured_answer => {
+            input     => [1],
+            operation => 'Flip coin',
             result    => qr/^(heads|tails)$/
         }
     ),
@@ -22,7 +30,7 @@ ddg_goodie_test(
         qr/(heads|tails) \(random\)/,
         structured_answer => {
             input     => [1],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/^(heads|tails)$/
         }
     ),
@@ -30,7 +38,7 @@ ddg_goodie_test(
         qr/(heads|tails), (heads|tails) \(random\)/,
         structured_answer => {
             input     => [2],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/(heads|tails), /
         }
     ),
@@ -38,7 +46,7 @@ ddg_goodie_test(
         qr/(heads|tails) \(random\)/,
         structured_answer => {
             input     => [1],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/^(heads|tails)$/
         }
     ),
@@ -46,7 +54,7 @@ ddg_goodie_test(
         qr/(heads|tails) \(random\)/,
         structured_answer => {
             input     => [1],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/^(heads|tails)$/
         }
     ),
@@ -54,7 +62,7 @@ ddg_goodie_test(
         qr/(heads|tails), (heads|tails) \(random\)/,
         structured_answer => {
             input     => [2],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/(heads|tails), /
         }
     ),
@@ -62,7 +70,7 @@ ddg_goodie_test(
         qr/(heads|tails) \(random\)/,
         structured_answer => {
             input     => [1],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/^(heads|tails)$/
         }
     ),
@@ -70,7 +78,7 @@ ddg_goodie_test(
         qr/(heads|tails) \(random\)/,
         structured_answer => {
             input     => [1],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/^(heads|tails)$/
         }
     ),
@@ -78,7 +86,7 @@ ddg_goodie_test(
         qr/((heads|tails),? ){4}\(random\)/,
         structured_answer => {
             input     => [4],
-            operation => 'flip coin',
+            operation => 'Flip coin',
             result    => qr/(heads|tails),? /
         }
     ),

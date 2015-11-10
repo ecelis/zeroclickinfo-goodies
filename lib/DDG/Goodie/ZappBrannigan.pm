@@ -1,17 +1,18 @@
 package DDG::Goodie::ZappBrannigan;
 # ABSTRACT: Zapp Brannigan quotes.
 
+use strict;
 use DDG::Goodie;
 
-use YAML::XS qw(Load);
+use YAML::XS 'LoadFile';
 
 triggers any => "zapp", "brannigan";
 
 zci answer_type => 'zapp_brannigan';
 zci is_cached   => 0;
 
-attribution github => ['http://github.com/nospampleasemam', 'nospampleasemam'],
-            web    => ['http://github.com/nospampleasemam', 'nospampleasemam'];
+attribution github => ['nospampleasemam', 'Dylan Lloyd'],
+            web    => ['nospampleasemam', 'Dylan Lloyd'];
 
 primary_example_queries 'zapp brannigan quote';
 name 'Zapp Brannigan';
@@ -20,7 +21,7 @@ code_url 'https://github.com/duckduckgo/zeroclickinfo-goodies/blob/master/lib/DD
 category 'entertainment';
 topics 'entertainment';
 
-my $quotes = Load(scalar share('quotes.yml')->slurp);
+my $quotes = LoadFile(share('quotes.yml'));
 
 handle query => sub {
     return unless $_ =~ m/quotes?/;
